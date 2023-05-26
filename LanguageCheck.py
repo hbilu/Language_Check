@@ -1,7 +1,6 @@
 
 from langdetect import detect_langs
-
-def langcheck(tweets):
+def lang_error_check(tweets):
     # creation of an empty list for tweets which gives a language error
     error_index = []
     # language check with detect_langs
@@ -13,9 +12,8 @@ def langcheck(tweets):
             language = "error"
             print("This row throws an error:", tweets.iloc[index, 0])
             error_index.append(index)
-    # removing tweets with language error
-    tweets.drop(tweets.index[error_index], inplace=True)
-    # print(tweets.shape)
+    return error_index
+def langcheck(tweets):
     # creation of an empty list for language results
     lang = []
     # detecting languages with their probabilities
