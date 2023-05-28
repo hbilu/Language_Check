@@ -12,7 +12,7 @@ err_index = lang_error_check(tweets_df)
 
 # removing tweets with language error
 tweets_df.drop(tweets_df.index[err_index], inplace=True)
-# print(tweets.shape)
+# print(tweets_df.shape)
 
 # language checking
 tweets_df = langcheck(tweets_df)
