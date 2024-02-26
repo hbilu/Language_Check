@@ -5,27 +5,33 @@ from LanguageCheck import langcheck, lang_error_check
 import sys
 
 def main():
-    tweets_df = pd.read_csv('tweets.csv', sep=';', index_col=0)
+    tweets_df = pd.read_csv('tweets.csv', sep=';', index_col=0, chunksize=100)
     # print(tweets_df.shape)
 
-    # detecting and printing tweets which gives a language error
-    err_index = lang_error_check(tweets_df)
+    for i, chunk in enumerate(tweets_df):
+        # detecting and printing tweets which gives a language error
+        err_index = lang_error_check(chunk)
 
-    # removing tweets with language error
-    tweets_df.drop(tweets_df.index[err_index], inplace=True)
-    # print(tweets_df.shape)
+        # removing tweets with language error
+        chunk.drop(chunk.index[err_index], inplace=True)
+        # print(tweets_df.shape)
 
-    # language checking
-    tweets_df = langcheck(tweets_df)
+        # language checking
+        chunk = langcheck(chunk)
 
-    # count the occurrences of languages and store them in newly created DataFrame, count_lang
-    count_lang = pd.DataFrame(tweets_df.groupby('language').text.count().sort_values(ascending=False))
-    print(count_lang)
+        # count the occurrences of languages and store them in newly created DataFrame, count_lang
+        count_lang = pd.DataFrame(chunk.groupby('language').text.count().sort_values(ascending=False))
+        print(count_lang)
+
+        if i==0:
+            chunk.to_csv('tweets_langcheck.csv', mode='w', index=False)
+        else:
+            chunk.to_csv('tweets_langcheck.csv', mode='a', index=False, header=False)
 
     # line profiling for langcheck function
     lp = LineProfiler()
     lp_wrapper = lp(langcheck)
-    lp_wrapper(tweets_df)
+    lp_wrapper(chunk)
     lp.print_stats()
 
 if __name__ == '__main__':
