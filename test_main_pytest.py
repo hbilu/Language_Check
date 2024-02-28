@@ -25,9 +25,6 @@ def test_process(mocker, setup):
     # mocking lang_error_check to return an empty list
     mocker.patch('main.lang_error_check', return_value=[])
 
-    #def df_modified(df):
-    #   df['language'] = 'en'
-    #   return df
     # mocking langcheck to add a 'language' column to the DataFrame
     mocker.patch('main.langcheck', side_effect = lambda df: df.assign(language='en'))
 
